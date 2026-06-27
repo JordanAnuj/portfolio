@@ -31,15 +31,15 @@ navMobile.querySelectorAll('a').forEach(link => {
 const nav = document.getElementById('nav');
 window.addEventListener('scroll', () => {
   if (window.scrollY > 40) {
-    nav.style.background = 'rgba(11,14,20,0.85)';
+    nav.style.background = 'rgba(237,227,211,0.92)';
   } else {
-    nav.style.background = 'rgba(11,14,20,0.5)';
+    nav.style.background = 'rgba(237,227,211,0.6)';
   }
 }, { passive: true });
 
 // ============================================================
 // HERO CANVAS — satellite / pixel grid that sharpens on scroll
-// (signature "resolution reveal" effect)
+// (signature "resolution reveal" effect, now in warm sepia tones)
 // ============================================================
 const canvas = document.getElementById('gridCanvas');
 const ctx = canvas.getContext('2d');
@@ -74,10 +74,10 @@ function drawGrid() {
 
       if (v > 0.86) {
         const alpha = (v - 0.86) / 0.14;
-        ctx.fillStyle = `rgba(79, 216, 196, ${alpha * (0.5 + (1 - noiseLevel) * 0.5)})`;
+        ctx.fillStyle = `rgba(181, 85, 44, ${alpha * (0.45 + (1 - noiseLevel) * 0.45)})`;
         ctx.fillRect(x * cellSize, y * cellSize, cellSize - 2, cellSize - 2);
       } else if (v > 0.8 && noiseLevel > 0.05) {
-        ctx.fillStyle = `rgba(255, 180, 84, ${(v - 0.8) * 2 * noiseLevel})`;
+        ctx.fillStyle = `rgba(107, 115, 83, ${(v - 0.8) * 2 * noiseLevel})`;
         ctx.fillRect(x * cellSize, y * cellSize, cellSize - 2, cellSize - 2);
       }
     }
