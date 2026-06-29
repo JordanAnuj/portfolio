@@ -38,21 +38,18 @@ window.addEventListener('scroll', () => {
 }, { passive: true });
 
 // ============================================================
-// HERO CANVAS — satellite / pixel grid that sharpens on scroll
-// (signature "resolution reveal" effect, now in warm sepia tones)
+// HERO CANVAS — static decorative grid background (no animation)
 // ============================================================
 const canvas = document.getElementById('gridCanvas');
 const ctx = canvas.getContext('2d');
 let cellSize = 26;
-let noiseLevel = 1; // 1 = max noise/blur, 0 = fully resolved
 
 function resizeCanvas() {
   canvas.width = canvas.offsetWidth * devicePixelRatio;
   canvas.height = canvas.offsetHeight * devicePixelRatio;
   ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+  drawGrid();
 }
-resizeCanvas();
-window.addEventListener('resize', resizeCanvas);
 
 function drawGrid() {
   const w = canvas.offsetWidth;
@@ -64,82 +61,48 @@ function drawGrid() {
 
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
-      // base pseudo-random pattern (deterministic per cell)
+      // fixed pattern — same every time, no randomness, no looping
       const seed = Math.sin(x * 12.9898 + y * 78.233) * 43758.5453;
-      const base = seed - Math.floor(seed); // 0..1
-
-      // random flicker mixed in proportionally to noiseLevel
-      const flicker = (Math.random() - 0.5) * noiseLevel;
-      const v = Math.min(1, Math.max(0, base * (1 - noiseLevel * 0.5) + flicker));
+      const v = seed - Math.floor(seed);
 
       if (v > 0.86) {
         const alpha = (v - 0.86) / 0.14;
-        ctx.fillStyle = `rgba(181, 85, 44, ${alpha * (0.45 + (1 - noiseLevel) * 0.45)})`;
+        ctx.fillStyle = `rgba(181, 85, 44, ${alpha * 0.5})`;
         ctx.fillRect(x * cellSize, y * cellSize, cellSize - 2, cellSize - 2);
-      } else if (v > 0.8 && noiseLevel > 0.05) {
-        ctx.fillStyle = `rgba(107, 115, 83, ${(v - 0.8) * 2 * noiseLevel})`;
+      } else if (v > 0.8) {
+        ctx.fillStyle = `rgba(107, 115, 83, ${(v - 0.8) * 1.2})`;
         ctx.fillRect(x * cellSize, y * cellSize, cellSize - 2, cellSize - 2);
       }
     }
   }
 }
 
-let rafId;
-function loop() {
-  drawGrid();
-  rafId = requestAnimationFrame(loop);
-}
-if (!reduceMotion) {
-  loop();
-} else {
-  noiseLevel = 0.15;
-  drawGrid();
-}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
 
 // ============================================================
-// RESOLUTION REVEAL — hero text sharpens + PSNR ticks up on load
+// HERO TEXT — one-time fade-in on load (no looping animation)
 // ============================================================
 const resolveEls = document.querySelectorAll('[data-resolve]');
-const psnrEl = document.getElementById('psnrValue');
-const readoutFill = document.getElementById('readoutFill');
 
 function runResolveSequence() {
-  const targetPSNR = 31.6;
-  const startPSNR = 18.2;
-
   if (window.gsap) {
-    gsap.timeline({ defaults: { ease: 'power3.out' } })
-      .to(resolveEls, {
-        filter: 'blur(0px)',
-        opacity: 1,
-        duration: 1.4,
-        stagger: 0.12
-      }, 0.2)
-      .to({}, {
-        duration: 1.6,
-        onUpdate: function () {
-          const p = this.progress();
-          noiseLevel = 1 - p;
-          const currentPSNR = startPSNR + (targetPSNR - startPSNR) * p;
-          psnrEl.textContent = currentPSNR.toFixed(1);
-          readoutFill.style.width = (22 + p * 78) + '%';
-        }
-      }, 0.2);
+    gsap.to(resolveEls, {
+      filter: 'blur(0px)',
+      opacity: 1,
+      duration: 1.2,
+      stagger: 0.12,
+      ease: 'power3.out'
+    });
   } else {
     resolveEls.forEach(el => { el.style.filter = 'blur(0px)'; el.style.opacity = 1; });
-    noiseLevel = 0;
-    psnrEl.textContent = targetPSNR.toFixed(1);
-    readoutFill.style.width = '100%';
   }
 }
 
 if (reduceMotion) {
   resolveEls.forEach(el => { el.style.filter = 'none'; el.style.opacity = 1; });
-  psnrEl.textContent = '31.6';
-  readoutFill.style.width = '100%';
 } else {
   window.addEventListener('DOMContentLoaded', runResolveSequence);
-  // fallback in case DOMContentLoaded already fired
   if (document.readyState !== 'loading') runResolveSequence();
 }
 
