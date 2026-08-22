@@ -5,6 +5,62 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Anuj K Janardhanan</title>
 <meta name="description" content="Portfolio of Anuj K Janardhanan a B.Tech CSE graduate working toward a career as an AI Engineer, with hands on work in Deep Learning, Computer Vision and NLP.">
+
+<link rel="canonical" href="https://jordananuj.github.io/portfolio/">
+<meta name="theme-color" content="#EDE3D3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1A130D" media="(prefers-color-scheme: dark)">
+
+<!-- Open Graph / link previews -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Anuj K Janardhanan — Aspiring AI Engineer">
+<meta property="og:description" content="B.Tech CSE graduate building deep learning systems — super resolution models at ISRO, NLP and full stack AI applications. Deep Learning · Computer Vision · NLP.">
+<meta property="og:url" content="https://jordananuj.github.io/portfolio/">
+<meta property="og:image" content="https://jordananuj.github.io/portfolio/assets/og-banner.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Anuj K Janardhanan — Aspiring AI Engineer">
+<meta name="twitter:description" content="B.Tech CSE graduate building deep learning systems — super resolution models at ISRO, NLP and full stack AI applications.">
+<meta name="twitter:image" content="https://jordananuj.github.io/portfolio/assets/og-banner.png">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Anuj K Janardhanan",
+  "url": "https://jordananuj.github.io/portfolio/",
+  "email": "mailto:anujjanardhanan@gmail.com",
+  "jobTitle": "Aspiring AI Engineer",
+  "knowsAbout": ["Deep Learning", "Computer Vision", "Natural Language Processing", "Machine Learning", "PyTorch"],
+  "alumniOf": {
+    "@type": "CollegeOrUniversity",
+    "name": "Indus University, Ahmedabad"
+  },
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Ahmedabad",
+    "addressRegion": "Gujarat",
+    "addressCountry": "IN"
+  },
+  "sameAs": [
+    "https://linkedin.com/in/anuj-k-janardhanan-593881192",
+    "https://github.com/JordanAnuj",
+    "https://www.credly.com/users/anuj-k-janardhanan.15421318"
+  ]
+}
+</script>
+
+<!-- apply saved theme before first paint to avoid a flash -->
+<script>
+(function(){
+  var t;
+  try { t = localStorage.getItem('theme'); } catch(e) {}
+  if (t !== 'dark' && t !== 'light') {
+    t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  document.documentElement.setAttribute('data-theme', t);
+})();
+</script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23EDE3D3'/%3E%3Crect x='15' y='55' width='12' height='30' fill='%23B5552C'/%3E%3Crect x='32' y='40' width='12' height='45' fill='%23B5552C'/%3E%3Crect x='49' y='20' width='12' height='65' fill='%23B5552C'/%3E%3Crect x='66' y='35' width='12' height='50' fill='%236B7353'/%3E%3C/svg%3E">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,6 +76,8 @@
 
 <a class="skip-link" href="#main">Skip to content</a>
 
+<span class="scroll-progress" id="scrollProgress" aria-hidden="true"></span>
+
 <header class="nav" id="nav">
   <div class="nav-inner">
     <a href="#top" class="logo" aria-label="Anuj K Janardhanan — home">A·K·J</a>
@@ -31,7 +89,11 @@
       <a href="#education">Education</a>
       <a href="#contact">Contact</a>
     </nav>
-    <a class="btn btn-ghost nav-resume" href="assets/Anuj_Resume.pdf" download>Resume </a>
+    <a class="btn btn-ghost nav-resume" href="assets/Anuj_Resume.pdf" download>Resume<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v13"/><path d="m6 11 6 6 6-6"/><path d="M4 21h16"/></svg></a>
+    <button class="icon-btn theme-toggle" id="themeToggle" aria-label="Switch between light and dark theme">
+      <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+      <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+    </button>
     <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
@@ -53,13 +115,19 @@
   <section class="hero" id="top">
     <canvas id="gridCanvas" class="hero-canvas" aria-hidden="true"></canvas>
 
+    <span class="hero-mark hero-mark-tl" aria-hidden="true"></span>
+    <span class="hero-mark hero-mark-tr" aria-hidden="true"></span>
+    <span class="hero-mark hero-mark-bl" aria-hidden="true"></span>
+    <span class="hero-mark hero-mark-br" aria-hidden="true"></span>
+
     <div class="hero-content">
+      <div data-resolve><span class="hero-badge mono"><span class="badge-dot" aria-hidden="true"></span>OPEN&nbsp;TO&nbsp;WORK</span></div>
       <p class="eyebrow mono" data-resolve>ASPIRING&nbsp;AI&nbsp;ENGINEER&nbsp;·&nbsp;DEEP&nbsp;LEARNING&nbsp;·&nbsp;COMPUTER&nbsp;VISION&nbsp;·&nbsp;NLP</p>
       <h1 class="hero-title" data-resolve>Anuj K<br>Janardhanan</h1>
-      <p class="hero-sub" data-resolve>I want to build AI systems for a living and I'm not waiting for the job title to start doing it. I've already built super resolution models at ISRO. Eager to bring that same hunger to a full time AI Engineering team.</p>
+      <p class="hero-sub" data-resolve>I want to build AI systems for a living and I'm not waiting for the job title to start doing it. I've already built super resolution models at ISRO. Eager to bring that same hunger to a AI Engineering team.</p>
       <div class="hero-actions" data-resolve>
         <a href="#work" class="btn btn-primary">View my work</a>
-        <a href="assets/Anuj_Resume.pdf" download class="btn btn-ghost">Download Resume</a>
+        <a href="assets/Anuj_Resume.pdf" download class="btn btn-ghost">Download Resume<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v13"/><path d="m6 11 6 6 6-6"/><path d="M4 21h16"/></svg></a>
       </div>
     </div>
 
@@ -78,17 +146,18 @@
       <div class="about-text">
         <p class="section-label mono">01 — ABOUT</p>
         <h2 class="section-title">I want to work as an AI Engineer and I'm already doing the work to earn it.</h2>
-        <p class="lead">I'm a B.Tech CSE graduate from Indus University with a clear goal build real deep learning systems for a living. I didn't wait for a job title to start, at ISRO's Space Application Centre I built super resolution models (ESRGAN, SRDiff) from scratch in PyTorch and outside of that I've shipped NLP and full stack AI applications end to end on my own initiative. I pick up new tools fast, take ownership of problems nobody assigns me and I'm looking for a team that wants that same drive from day one.</p>
+        <p class="lead">I'm a B.Tech CSE graduate from Indus University with a clear goal build real deep learning systems for a living. I didn't wait for a job title to start, at ISRO's Space Application Centre I built super resolution models (ESRGAN, SRDiff) from scratch in PyTorch and outside of that I've shipped NLP and full stack AI applications end to end, working solo and in teams. I pick up new tools fast, take ownership of problems nobody assigns me and I'm looking for a team that wants that same drive from day one.</p>
       </div>
       <div class="about-stats">
-        <div class="stat"><span class="stat-label mono">CGPA</span><span class="stat-value">8.84<small>/10</small></span></div>
-        <div class="stat"><span class="stat-label mono">GRADUATED</span><span class="stat-value">2026</span></div>
-        <div class="stat"><span class="stat-label mono">SEEKING</span><span class="stat-value-sm">Full time AI<br>Engineer roles</span></div>
-        <div class="stat"><span class="stat-label mono">FOCUS</span><span class="stat-value-sm">Deep Learning,<br>CV &amp; NLP</span></div>
+        <div class="stat"><span class="stat-label mono">CGPA</span><span class="stat-value">9.16<small>/10</small></span></div>
+        <div class="stat"><span class="stat-label mono">GRADUATED</span><span class="stat-value">JUN 2026</span></div>
+        <div class="stat"><span class="stat-label mono">SEEKING</span><span class="stat-value-sm">AI Developer roles</span></div>
+        <div class="stat"><span class="stat-label mono">FOCUS</span><span class="stat-value-sm">AI, ML <br> Deep Learning,<br>CV &amp; NLP</span></div>
       </div>
     </div>
   </section>
 
+  
   <!-- ============ SKILLS ============ -->
   <section class="section section-alt" id="skills">
     <div class="container">
@@ -196,11 +265,24 @@
   <section class="section section-alt" id="work">
     <div class="container">
       <p class="section-label mono">04 — SELECTED WORK</p>
-      <h2 class="section-title">Three problems, three full builds built on my own initiative.</h2>
+      <h2 class="section-title">Three problems, three full builds shipped end to end.</h2>
 
       <div class="projects">
 
         <article class="project-card">
+          <div class="project-banner" aria-hidden="true">
+            <svg viewBox="0 0 400 92" preserveAspectRatio="xMidYMid slice" fill="none">
+              <path class="art-dim" stroke-width="1" opacity="0.5" d="M60 46 L140 24 M140 24 L220 56 M220 56 L300 30 M140 24 L220 20 M220 56 L300 68"/>
+              <circle class="art-signal-fill" cx="60" cy="46" r="6"/>
+              <circle class="art-resolve-fill" cx="140" cy="24" r="5"/>
+              <circle class="art-signal-fill" cx="220" cy="56" r="7"/>
+              <circle class="art-dim-fill" cx="220" cy="20" r="4" opacity="0.6"/>
+              <circle class="art-resolve-fill" cx="300" cy="30" r="5"/>
+              <circle class="art-dim-fill" cx="300" cy="68" r="4" opacity="0.6"/>
+              <circle class="art-signal" cx="60" cy="46" r="11" stroke-width="1" opacity="0.4"/>
+              <circle class="art-signal" cx="220" cy="56" r="12" stroke-width="1" opacity="0.4"/>
+            </svg>
+          </div>
           <div class="project-head">
             <h3 class="project-title">WorkSync AI</h3>
             <span class="project-kicker mono">INTELLIGENT HR MANAGEMENT SYSTEM</span>
@@ -214,6 +296,14 @@
         </article>
 
         <article class="project-card">
+          <div class="project-banner" aria-hidden="true">
+            <svg viewBox="0 0 400 92" preserveAspectRatio="none" fill="none">
+              <path class="art-signal" stroke-width="2" opacity="0.9" d="M0 46 C 30 46 40 20 60 20 S 90 72 110 72 130 30 150 30 180 60 200 60 220 16 240 16 270 70 290 70 310 40 330 40 370 52 400 46"/>
+              <path class="art-resolve" stroke-width="1.5" opacity="0.55" d="M0 52 C 40 52 50 34 70 34 S 100 64 120 64 150 40 170 40 200 56 220 56 250 30 270 30 300 62 320 62 350 46 400 50"/>
+              <circle class="art-signal-fill" cx="240" cy="16" r="4"/>
+              <circle class="art-resolve-fill" cx="110" cy="72" r="3.5"/>
+            </svg>
+          </div>
           <div class="project-head">
             <h3 class="project-title">Moodify</h3>
             <span class="project-kicker mono">AI EMOTION DETECTION WELLNESS APP</span>
@@ -227,6 +317,18 @@
         </article>
 
         <article class="project-card">
+          <div class="project-banner" aria-hidden="true">
+            <svg viewBox="0 0 400 92" preserveAspectRatio="xMidYMax slice" fill="none">
+              <rect class="art-dim-fill" x="40" y="40" width="34" height="52" opacity="0.45"/>
+              <rect class="art-signal-fill" x="86" y="24" width="40" height="68" opacity="0.85"/>
+              <rect class="art-resolve-fill" x="138" y="48" width="30" height="44" opacity="0.7"/>
+              <rect class="art-dim-fill" x="180" y="32" width="38" height="60" opacity="0.5"/>
+              <rect class="art-signal-fill" x="230" y="54" width="28" height="38" opacity="0.65"/>
+              <rect class="art-resolve-fill" x="270" y="28" width="42" height="64" opacity="0.8"/>
+              <rect class="art-dim-fill" x="324" y="46" width="32" height="46" opacity="0.45"/>
+              <circle class="art-signal" cx="52" cy="18" r="8" stroke-width="1.5" opacity="0.7"/>
+            </svg>
+          </div>
           <div class="project-head">
             <h3 class="project-title">Weekendy</h3>
             <span class="project-kicker mono">HOTEL BOOKING &amp; ITINERARY PLATFORM</span>
@@ -252,7 +354,7 @@
         <div class="edu-item">
           <h3 class="edu-school">Indus University, Ahmedabad</h3>
           <p class="edu-deg">B.Tech, Computer Science Engineering : 2022 - 2026</p>
-          <p class="edu-detail">CGPA 8.84 / 10 · Coursework: Machine Learning, OOP, Data Structures &amp; Algorithms, Database Systems</p>
+          <p class="edu-detail">CGPA 9.16 / 10 · Coursework: Machine Learning, OOP, Data Structures &amp; Algorithms, Database Systems</p>
         </div>
 
         <div class="edu-item">
@@ -289,9 +391,15 @@
     <div class="container contact-inner">
       <p class="section-label mono">06 — CONTACT</p>
       <h2 class="contact-title">Looking for an AI Engineer who's eager to prove it. That's me.</h2>
-      <p class="contact-sub">Actively seeking full time AI Engineer roles in deep learning, computer vision or NLP. If that's what you're hiring for, I'd love to talk.</p>
+      <p class="contact-sub">Actively seeking AI Engineer roles in Deep Learning, Computer Vision or NLP. If that's what you're hiring for, I'd love to talk.</p>
 
-      <a class="contact-email" href="mailto:anujjanardhanan@gmail.com">anujjanardhanan@gmail.com</a>
+      <div class="email-row">
+        <a class="contact-email" href="mailto:anujjanardhanan@gmail.com">anujjanardhanan@gmail.com</a>
+        <button class="icon-btn copy-btn" id="copyEmail" aria-label="Copy email address">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+        </button>
+        <span class="copy-toast mono" id="copyToast" role="status">COPIED!</span>
+      </div>
 
       <div class="contact-links">
         <a href="https://linkedin.com/in/anuj-k-janardhanan-593881192" target="_blank" rel="noopener">LinkedIn</a>
@@ -306,6 +414,10 @@
 
 </main>
 
+<button class="to-top" id="toTop" aria-label="Back to top">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>
+</button>
+
 <footer class="footer">
   <div class="container footer-inner">
     <span class="mono">© <span id="year"></span> ANUJ K JANARDHANAN</span>
@@ -313,8 +425,8 @@
   </div>
 </footer>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-<script src="js/main.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+<script src="js/main.js" defer></script>
 </body>
 </html>
