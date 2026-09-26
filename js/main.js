@@ -1,223 +1,176 @@
-// ============================================================
-// SETUP
-// ============================================================
+// Progressive enhancement: all portfolio content is visible without JavaScript.
+const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
+let reduceMotion = motionPreference.matches;
 document.getElementById('year').textContent = new Date().getFullYear();
-
-const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-if (window.gsap && window.ScrollTrigger) {
-  gsap.registerPlugin(ScrollTrigger);
-}
-
-// ============================================================
-// MOBILE NAV TOGGLE
-// ============================================================
+const nav = document.getElementById('nav');
 const navToggle = document.getElementById('navToggle');
 const navMobile = document.getElementById('navMobile');
-
-navToggle.addEventListener('click', () => {
-  const isOpen = navMobile.classList.toggle('open');
-  navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+function setMenu(open, restoreFocus = false) {
+  navMobile.classList.toggle('open', open);
+  navMobile.inert = !open;
+  navToggle.setAttribute('aria-expanded', String(open));
+  navToggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+  if (restoreFocus) navToggle.focus();
+}
+navToggle.addEventListener('click', () => setMenu(navToggle.getAttribute('aria-expanded') !== 'true'));
+navMobile.querySelectorAll('a').forEach(link => link.addEventListener('click', () => setMenu(false)));
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape' && navMobile.classList.contains('open')) setMenu(false, true);
 });
-
-navMobile.querySelectorAll('a').forEach(link => {
-  link.addEventListener('click', () => {
-    navMobile.classList.remove('open');
-    navToggle.setAttribute('aria-expanded', 'false');
-  });
+document.addEventListener('click', event => {
+  if (!nav.contains(event.target)) setMenu(false);
 });
+nav.addEventListener('focusout', () => {
+  requestAnimationFrame(() => { if (!nav.contains(document.activeElement)) setMenu(false); });
+});
+window.matchMedia('(min-width: 861px)').addEventListener('change', event => { if (event.matches) setMenu(false); });
 
-// nav background intensifies on scroll + scroll progress bar
-const nav = document.getElementById('nav');
-const scrollProgress = document.getElementById('scrollProgress');
-window.addEventListener('scroll', () => {
-  nav.classList.toggle('scrolled', window.scrollY > 40);
-  if (scrollProgress) {
-    const max = document.documentElement.scrollHeight - window.innerHeight;
-    scrollProgress.style.transform = `scaleX(${max > 0 ? window.scrollY / max : 0})`;
-  }
-}, { passive: true });
-
-// ============================================================
-// THEME TOGGLE — light / espresso dark (persisted)
-// ============================================================
 const themeToggle = document.getElementById('themeToggle');
-
-function isDarkTheme() {
-  return document.documentElement.getAttribute('data-theme') === 'dark';
+function isDarkTheme() { return document.documentElement.dataset.theme === 'dark'; }
+function updateThemeLabel() {
+  themeToggle.setAttribute('aria-label', isDarkTheme() ? 'Switch to light theme' : 'Switch to dark theme');
 }
+updateThemeLabel();
+themeToggle.addEventListener('click', () => {
+  const next = isDarkTheme() ? 'light' : 'dark';
+  document.documentElement.dataset.theme = next;
+  try { localStorage.setItem('theme', next); } catch (e) { /* Storage may be disabled. */ }
+  updateThemeLabel();
+  drawGrid();
+});
 
-if (themeToggle) {
-  themeToggle.addEventListener('click', () => {
-    const next = isDarkTheme() ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', next);
-    try { localStorage.setItem('theme', next); } catch (e) {}
-    drawGrid(); // hero canvas uses theme-dependent colors
-  });
-}
-
-// ============================================================
-// COPY EMAIL
-// ============================================================
 const copyEmail = document.getElementById('copyEmail');
 const copyToast = document.getElementById('copyToast');
 let toastTimer;
+copyEmail.addEventListener('click', async () => {
+  const email = document.querySelector('.contact-email').textContent.trim();
+  try {
+    if (!navigator.clipboard) throw new Error('Clipboard unavailable');
+    await navigator.clipboard.writeText(email);
+    copyToast.textContent = 'COPIED!';
+  } catch (error) {
+    copyToast.textContent = 'Select the email to copy';
+    const range = document.createRange();
+    range.selectNodeContents(document.querySelector('.contact-email'));
+    const selection = window.getSelection();
+    selection.removeAllRanges(); selection.addRange(range);
+  }
+  copyToast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => copyToast.classList.remove('show'), 2400);
+});
 
-if (copyEmail && copyToast) {
-  copyEmail.addEventListener('click', () => {
-    navigator.clipboard.writeText('anujjanardhanan@gmail.com').then(() => {
-      copyToast.classList.add('show');
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => copyToast.classList.remove('show'), 1800);
-    });
-  });
-}
-
-// ============================================================
-// ACTIVE NAV LINK — highlight the section currently in view
-// ============================================================
-const navLinks = document.querySelectorAll('.nav-links a[href^="#"]');
-const watchedSections = [...navLinks]
-  .map(link => document.querySelector(link.getAttribute('href')))
-  .filter(Boolean);
-
-function updateActiveLink() {
-  const marker = window.scrollY + window.innerHeight * 0.42;
-  let currentId = '';
-  watchedSections.forEach(section => {
-    if (section.offsetTop <= marker) currentId = section.id;
-  });
-  navLinks.forEach(link => {
-    link.classList.toggle('active', link.getAttribute('href') === '#' + currentId);
-  });
-}
-
-if (watchedSections.length) {
-  window.addEventListener('scroll', updateActiveLink, { passive: true });
-  updateActiveLink();
-}
-
-// ============================================================
-// BACK TO TOP
-// ============================================================
+// One scheduled scroll update, with section positions cached outside the scroll path.
+const navLinks = [...document.querySelectorAll('.nav-links a, .nav-mobile a[href^="#"]')];
+const sections = [...document.querySelectorAll('main > section[id]')];
+const scrollProgress = document.getElementById('scrollProgress');
 const toTop = document.getElementById('toTop');
-if (toTop) {
-  window.addEventListener('scroll', () => {
-    toTop.classList.toggle('visible', window.scrollY > 600);
-  }, { passive: true });
-  toTop.addEventListener('click', () => {
-    window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+let sectionPositions = [], maxScroll = 0, scrollQueued = false;
+function measurePage() {
+  sectionPositions = sections.map(section => ({ id:section.id, top:section.offsetTop }));
+  maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+  updateScroll();
+}
+function updateScroll() {
+  scrollQueued = false;
+  const y = window.scrollY;
+  nav.classList.toggle('scrolled', y > 40);
+  scrollProgress.style.transform = 'scaleX(' + Math.max(0, Math.min(1, maxScroll > 0 ? y / maxScroll : 0)) + ')';
+  toTop.classList.toggle('visible', y > 600);
+  let current = '';
+  sectionPositions.forEach(section => { if (section.top <= y + window.innerHeight * .35) current = section.id; });
+  navLinks.forEach(link => {
+    const active = link.hash === '#' + current;
+    link.classList.toggle('active', active);
+    if (active) link.setAttribute('aria-current', 'location');
+    else link.removeAttribute('aria-current');
   });
 }
+window.addEventListener('scroll', () => {
+  if (!scrollQueued) { scrollQueued = true; requestAnimationFrame(updateScroll); }
+}, { passive:true });
+toTop.addEventListener('click', () => {
+  window.scrollTo({ top:0, behavior:reduceMotion ? 'instant' : 'smooth' });
+  document.querySelector('.logo').focus({ preventScroll:true });
+});
 
-// ============================================================
-// HERO CANVAS — static decorative grid background (no animation)
-// ============================================================
+// Static deterministic resolution grid; redraw only when size or theme changes.
 const canvas = document.getElementById('gridCanvas');
 const ctx = canvas.getContext('2d');
 let cellSize = 26;
 
 function resizeCanvas() {
-  canvas.width = canvas.offsetWidth * devicePixelRatio;
-  canvas.height = canvas.offsetHeight * devicePixelRatio;
-  ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+  if (!ctx) return;
+  const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+  canvas.width = canvas.offsetWidth * pixelRatio;
+  canvas.height = canvas.offsetHeight * pixelRatio;
+  ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
   drawGrid();
 }
 
 function drawGrid() {
+  if (!ctx) return;
   const w = canvas.offsetWidth;
   const h = canvas.offsetHeight;
   ctx.clearRect(0, 0, w, h);
 
-  const cols = Math.ceil(w / cellSize) + 1;
-  const rows = Math.ceil(h / cellSize) + 1;
-
-  for (let y = 0; y < rows; y++) {
-    for (let x = 0; x < cols; x++) {
-      // fixed pattern — same every time, no randomness, no looping
-      const seed = Math.sin(x * 12.9898 + y * 78.233) * 43758.5453;
-      const v = seed - Math.floor(seed);
-
-      // fade cells toward the centre so the hero text sits on calm ground,
-      // and let them strengthen toward the edges
-      const dx = (x * cellSize) / w - 0.5;
-      const dy = (y * cellSize) / h - 0.5;
-      const edge = Math.min(1, Math.sqrt(dx * dx + dy * dy) * 2.1);
-      const fade = edge * edge;
-
-      // brighter accents in dark mode so the grid stays visible
-      const dark = document.documentElement.getAttribute('data-theme') === 'dark';
-      const warm = dark ? '208, 106, 59' : '181, 85, 44';
-      const olive = dark ? '147, 160, 117' : '107, 115, 83';
-
-      if (v > 0.86) {
-        const alpha = ((v - 0.86) / 0.14) * 0.5 * fade;
-        ctx.fillStyle = `rgba(${warm}, ${alpha})`;
-        ctx.fillRect(x * cellSize, y * cellSize, cellSize - 2, cellSize - 2);
-      } else if (v > 0.8) {
-        ctx.fillStyle = `rgba(${olive}, ${(v - 0.8) * 1.2 * fade})`;
-        ctx.fillRect(x * cellSize, y * cellSize, cellSize - 2, cellSize - 2);
-      }
+  // A sampled interference field: coarse cells become finer toward the signal.
+  // Purely decorative mathematics, drawn once rather than a continuous particle loop.
+  const dark = isDarkTheme();
+  const warm = dark ? '208,106,59' : '164,73,38';
+  const olive = dark ? '147,160,117' : '89,99,65';
+  const centerX = w * .79;
+  const centerY = h * .39;
+  const radius = Math.min(w * .32, h * .40);
+  const step = w < 600 ? 15 : 19;
+  for (let y = Math.max(0, centerY - radius); y < centerY + radius; y += step) {
+    for (let x = Math.max(0, centerX - radius); x < Math.min(w, centerX + radius); x += step) {
+      const dx = (x - centerX) / radius;
+      const dy = (y - centerY) / radius;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      if (distance > 1) continue;
+      const wave = (Math.sin(distance * 28 - Math.atan2(dy, dx) * 2) + 1) / 2;
+      const envelope = Math.pow(1 - distance, .5);
+      const size = 2 + wave * (step - 5);
+      const alpha = (.12 + wave * .68) * envelope;
+      ctx.fillStyle = 'rgba(' + (dy > .15 ? olive : warm) + ',' + alpha + ')';
+      ctx.fillRect(x + (step - size) / 2, y + (step - size) / 2, size, size);
     }
   }
 }
 
 resizeCanvas();
-window.addEventListener('resize', resizeCanvas);
+let resizeQueued = false;
+window.addEventListener('resize', () => {
+  if (resizeQueued) return;
+  resizeQueued = true;
+  requestAnimationFrame(() => { resizeQueued = false; resizeCanvas(); measurePage(); });
+}, { passive:true });
+measurePage();
+if (document.fonts) document.fonts.ready.then(() => { resizeCanvas(); measurePage(); });
+window.addEventListener('load', measurePage, { once:true });
 
-// ============================================================
-// HERO TEXT — one-time fade-in on load (no looping animation)
-// ============================================================
-const resolveEls = document.querySelectorAll('[data-resolve]');
-
-function runResolveSequence() {
-  if (window.gsap) {
-    gsap.to(resolveEls, {
-      filter: 'blur(0px)',
-      opacity: 1,
-      duration: 1.2,
-      stagger: 0.12,
-      ease: 'power3.out'
+// Short resolution entrance; all content is readable without the animation library.
+if (window.gsap) {
+  if (window.ScrollTrigger) gsap.registerPlugin(ScrollTrigger);
+  const animationContext = gsap.matchMedia();
+  animationContext.add('(prefers-reduced-motion: no-preference)', () => {
+    gsap.fromTo('[data-resolve]', { opacity:.35, filter:'blur(5px)', y:10 }, {
+      opacity:1, filter:'blur(0px)', y:0, duration:.65, stagger:.07,
+      ease:'power3.out', clearProps:'filter,opacity,transform'
     });
-  } else {
-    resolveEls.forEach(el => { el.style.filter = 'blur(0px)'; el.style.opacity = 1; });
-  }
-}
-
-if (reduceMotion) {
-  resolveEls.forEach(el => { el.style.filter = 'none'; el.style.opacity = 1; });
-} else {
-  window.addEventListener('DOMContentLoaded', runResolveSequence);
-  if (document.readyState !== 'loading') runResolveSequence();
-}
-
-// ============================================================
-// SCROLL REVEALS for sections
-// ============================================================
-if (window.gsap && window.ScrollTrigger && !reduceMotion) {
-
-  const revealTargets = [
-    '.section-label', '.section-title', '.about-text .lead',
-    '.stat', '.skill-card', '.timeline-item', '.project-card',
-    '.edu-item', '.cert-list li', '.contact-title', '.contact-sub',
-    '.contact-email', '.contact-links'
-  ];
-
-  revealTargets.forEach(sel => {
-    const els = document.querySelectorAll(sel);
-    if (!els.length) return;
-    gsap.fromTo(els, { opacity: 0, y: 28 }, {
-      opacity: 1, y: 0, duration: 0.8, ease: 'power2.out',
-      stagger: 0.08,
-      scrollTrigger: {
-        trigger: els[0],
-        start: 'top 85%',
-        toggleActions: 'play none none none'
-      }
+    gsap.fromTo('.hero-canvas', { opacity:.12, scale:1.04 }, {
+      opacity:.8, scale:1, duration:1.1, ease:'power2.out', clearProps:'transform,opacity'
+    });
+    if (!window.ScrollTrigger) return;
+    document.querySelectorAll('.section').forEach(section => {
+      const targets = [...section.querySelectorAll('.about-text, .about-stats, .section-label, .section-title, .skill-card, .timeline-item, .project-card, .edu-item, .cert-list, .contact-inner')];
+      const groups = targets.filter(el => !targets.some(parent => parent !== el && parent.contains(el)));
+      groups.forEach(el => gsap.from(el, {
+        y:18, opacity:0, duration:.6, ease:'power2.out', clearProps:'transform,opacity',
+        scrollTrigger:{ trigger:el, start:'top 94%', once:true }
+      }));
     });
   });
-
-} else {
-  // ensure content is visible without GSAP
-  document.querySelectorAll('.reveal').forEach(el => { el.style.opacity = 1; el.style.transform = 'none'; });
 }
+motionPreference.addEventListener('change', event => { reduceMotion = event.matches; });

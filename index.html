@@ -94,11 +94,11 @@
       <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
       <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
     </button>
-    <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">
+    <button class="nav-toggle" id="navToggle" aria-controls="navMobile" aria-label="Open menu" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
   </div>
-  <div class="nav-mobile" id="navMobile">
+  <div class="nav-mobile" id="navMobile" inert>
     <a href="#about">About</a>
     <a href="#skills">Skills</a>
     <a href="#experience">Experience</a>
@@ -122,8 +122,8 @@
 
     <div class="hero-content">
       <div data-resolve><span class="hero-badge mono"><span class="badge-dot" aria-hidden="true"></span>OPEN&nbsp;TO&nbsp;WORK</span></div>
-      <p class="eyebrow mono" data-resolve>ASPIRING&nbsp;AI&nbsp;ENGINEER&nbsp;·&nbsp;DEEP&nbsp;LEARNING&nbsp;·&nbsp;COMPUTER&nbsp;VISION&nbsp;·&nbsp;NLP</p>
-      <h1 class="hero-title" data-resolve>Anuj K<br>Janardhanan</h1>
+      <p class="eyebrow mono" data-resolve>ASPIRING&nbsp;AI&nbsp;ENGINEER · DEEP&nbsp;LEARNING · COMPUTER&nbsp;VISION · NLP</p>
+      <h1 class="hero-title" data-resolve><span>Anuj K</span><br><span>Janardhanan</span></h1>
       <p class="hero-sub" data-resolve>I want to build AI systems for a living and I'm not waiting for the job title to start doing it. I've already built super resolution models at ISRO. Eager to bring that same hunger to a AI Engineering team.</p>
       <div class="hero-actions" data-resolve>
         <a href="#work" class="btn btn-primary">View my work</a>
