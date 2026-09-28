@@ -1,31 +1,37 @@
 # Anuj K Janardhanan — Portfolio
 
-A dark, signal/resolution-themed portfolio site. The hero text and background grid start blurred/noisy and sharpen as the page loads — a nod to the super-resolution work (ESRGAN/SRDiff) in the resume.
+A warm beige/brown, signal/resolution-themed portfolio with light and dark modes. The hero text sharpens as the page loads alongside a decorative resolution grid — a nod to the super-resolution work (ESRGAN/SRDiff) in the resume.
 
 ## What's inside
 ```
 index.html          → all page content
 css/style.css        → all styling (one file, CSS variables at the top)
-js/main.js           → resolution-reveal effect + scroll animations
+js/main.js           → theme, mobile navigation, copy email, resolution reveal + scroll animations
 assets/Anuj_Resume.pdf → downloadable résumé (linked from the nav + hero)
+assets/og-banner.png  → legacy preview image (not referenced by current metadata)
 ```
 No build step, no npm install, no framework. Just open `index.html`.
 
 ---
 
-## 1. Before you go live — replace the placeholder links
+## 1. Current content and links
 
-Open `index.html` and search for `href="#"` (4 spots) and swap in your real URLs:
+The portfolio presents Anuj as an AI/ML Engineer and AI Developer at Amulya Corporate Services LLP, with previous ISRO and Adani experience, three projects, education and certifications. AMDEX is a recruitment operations, resume databank and candidate search platform with AI-assisted matching and retrieval. It is in development/testing; 5,000+ resumes is its intended design scale.
 
-| Where | Find | Replace with |
-|---|---|---|
-| Project cards (x3) | `View repository →` links | your actual GitHub repo links for WorkSync AI, Moodify, Weekendy |
-| Contact section | `LinkedIn` link | your real LinkedIn URL |
-| Contact section | `GitHub` link | your GitHub profile URL |
-| Contact section | `Credly` link | your Credly profile/badge URL |
-| Certifications | `View Credly badge →` (x2) | direct badge links |
+`index.html` already uses real URLs, with no placeholder `href="#"` links:
 
-Tip in VS Code: press `Ctrl+F`, search `href="#"`, and step through each one with "Replace".
+| Destination | URL |
+|---|---|
+| WorkSync AI | https://github.com/JordanAnuj/WorkSync.git |
+| Moodify | https://github.com/JordanAnuj/Moodify.git |
+| Weekendy | https://github.com/JordanAnuj/Weekendy.git |
+| LinkedIn | https://linkedin.com/in/anuj-k-janardhanan-593881192 |
+| GitHub | https://github.com/JordanAnuj |
+| Credly | https://www.credly.com/users/anuj-k-janardhanan.15421318 |
+| AWS badge | https://www.credly.com/badges/e4481b45-cba8-4193-ba5a-4a2a327d87d7/public_url |
+| IBM badge | https://www.credly.com/badges/9c0ff740-5781-4a0d-a6fd-0f3c25c044c3/public_url |
+
+All three resume buttons use `assets/Anuj_Resume.pdf`. Internal navigation points to section IDs. The canonical URL is https://jordananuj.github.io/portfolio/; Open Graph, Twitter and Schema.org Person metadata live in `index.html`.
 
 ---
 
@@ -38,23 +44,16 @@ Tip in VS Code: press `Ctrl+F`, search `href="#"`, and step through each one wit
 
 ---
 
-## 3. Put it on GitHub (free)
+## 3. GitHub repository
 
-1. Install **Git for Windows**: https://git-scm.com/download/win
-2. Create a free GitHub account if you don't have one: https://github.com
-3. On GitHub, click **New repository**. Name it `portfolio` (or `yourusername.github.io` — see note below). Keep it public. Don't add a README (you already have files).
-4. In VS Code, open a terminal (`` Ctrl+` ``) in this project folder and run:
+This is an existing Git project. Check the configured remote before publishing changes:
 
 ```bash
-git init
-git add .
-git commit -m "Initial portfolio site"
-git branch -M main
-git remote add origin https://github.com/YOUR-USERNAME/portfolio.git
-git push -u origin main
+git remote -v
+git status
 ```
 
-(Replace `YOUR-USERNAME` and the repo name with your own.)
+Use the update commands below when ready to publish; there is no need to initialize a new repository.
 
 ---
 
@@ -63,9 +62,7 @@ git push -u origin main
 1. On your repo page → **Settings** → **Pages** (left sidebar).
 2. Under "Build and deployment" → Source: **Deploy from a branch**.
 3. Branch: `main`, folder: `/ (root)` → **Save**.
-4. Wait ~1 minute. GitHub will show your live URL:
-   - If your repo is named `portfolio` → `https://YOUR-USERNAME.github.io/portfolio/`
-   - If your repo is named exactly `YOUR-USERNAME.github.io` → it's live at `https://YOUR-USERNAME.github.io/` directly (no extra path) — this is the cleaner option if you want this to be *the* personal site.
+4. Once deployment completes, the configured portfolio URL is https://jordananuj.github.io/portfolio/.
 
 ---
 
@@ -79,7 +76,7 @@ git commit -m "describe what you changed"
 git push
 ```
 
-GitHub Pages redeploys automatically within a minute.
+When GitHub Pages is configured to deploy from this branch, pushing triggers a deployment. Check its status in GitHub.
 
 ---
 

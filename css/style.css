@@ -850,6 +850,12 @@ body{ overflow-x:clip; }
 .stat:first-child .stat-value{ font-size:clamp(3rem,5.8vw,5.2rem); color:var(--signal); }
 .stat-label{ font-size:.63rem; }
 .stat-value-sm{ font-family:var(--font-display); font-size:1.2rem; font-weight:500; }
+.stat-cgpa{ display:flex; align-items:baseline; gap:.5rem; white-space:nowrap; }
+.stat-cgpa > span,.stat-cgpa > small{ flex:none; }
+.stat-cgpa > small{ letter-spacing:normal; line-height:1.4; }
+.stat-focus{ display:grid; gap:.5rem; }
+.stat-focus strong{ font-weight:700; }
+.stat-focus > span{ font-size:.9em; line-height:1.45; }
 
 /* A technical index, rather than a wall of interchangeable cards. */
 #skills{ background:var(--paper); color:var(--void); }
@@ -1026,6 +1032,13 @@ body{ overflow-x:clip; }
  .contact-email{ font-size:.93rem; }
  .email-row{ gap:6px; }
  .contact-title{ font-size:2.3rem; }
+}
+/* Give the large metric and longer role/focus labels room on narrow phones. */
+@media(max-width:480px){
+ .about-stats{ grid-template-columns:minmax(0,1fr); }
+ .stat{ border-right:0; min-height:0; }
+ .stat:nth-child(n+3){ border-bottom:1px solid var(--line-strong); }
+ .stat:last-child{ border-bottom:0; }
 }
 @media(prefers-reduced-motion:reduce){
  [data-resolve]{ opacity:1 !important; filter:none !important; transform:none !important; }
